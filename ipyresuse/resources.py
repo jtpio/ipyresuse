@@ -5,6 +5,7 @@
 TODO: Add module docstring
 """
 import asyncio
+import os
 import time
 
 import psutil
@@ -12,6 +13,10 @@ import psutil
 from ipywidgets import DOMWidget
 from traitlets import Int, Float, List, Unicode
 from ._frontend import module_name, module_version
+
+
+virtual = psutil.virtual_memory()
+MEM_LIMIT = int(os.environ.get('MEM_LIMIT', 0)) or virtual.total
 
 
 # inspired by https://stackoverflow.com/a/1094933
@@ -37,7 +42,7 @@ class KernelMemoryUsage(DOMWidget):
     _text = Unicode("0 / 0 B").tag(sync=True)
     _values = List([0] * 20).tag(sync=True)
     _percentage = Float(None, allow_none=True).tag(sync=True)
-    limit = Int(None, allow_none=True).tag(sync=True)
+    limit = Int(MEM_LIMIT, allow_none=True).tag(sync=True)
     label = Unicode("Mem:").tag(sync=True)
 
 
